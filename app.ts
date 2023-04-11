@@ -4,7 +4,7 @@ import { resolve } from 'path';
 import dust from 'dustjs-linkedin';
 import fs from 'fs';
 
-const TEMPLATE_NAME = 'template_output';
+const TEMPLATE_NAME = 'gtag_template';
 
 const distPath = resolve(__dirname, './dist');
 const template = fs.readFileSync(resolve(distPath, 'template.dust')).toString();
@@ -15,9 +15,13 @@ dust.render(TEMPLATE_NAME, {
   gtag: 'G-123456',
 }, (err, output) => {
   if (err) {
-    console.log('[Error]:', err);
+    console.error('[Error]:', err);
+    return;
   }
-  if (output) console.log('[output]:', output);
+  if (output) {
+    fs.writeFileSync(resolve(distPath, 'index.html'), output);
+    return;
+  };
 });
 
 const app = express();
